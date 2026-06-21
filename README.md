@@ -1,52 +1,65 @@
-# Relay
+# Relay · AI Meeting Assistant
 
-A minimal Chrome extension that records full meeting audio — both the
-remote participants' voices from the meeting tab and your own
-microphone — mixed into a single file you can save to your computer.
+Relay is a Chrome extension that captures your online meetings (Google Meet, Zoom, Teams) with a single click. It records mixed meeting audio (remote participants + your microphone) directly from your browser and saves it as a high-quality WebM file. This clean, complete audio forms the essential foundation for future AI processing — transcription, action item extraction, and automated follow-ups.
 
-## A note on how this works
+---
 
-Relay shows a visible red banner ("● Relay is recording this meeting")
-at the top of the meeting tab itself whenever it's recording, in
-addition to Chrome's own built-in tab-capture indicator. This is
-intentional: recording other people's conversations without making
-that obvious is illegal in many places and a bad way to treat people
-on a call. Relay is built to make recording *easy*, not to make it
-*invisible*. Please don't modify the code to suppress or hide these
-indicators, and let everyone on the call know you're recording before
-you start.
+## Core Problem
+
+- Action items are remembered differently by each person in a meeting
+- Follow-up emails are written manually — or simply forgotten
+- Decisions get buried in chat threads with no clear record
+- New team members have no way to catch up on past choices
+
+---
+
+## How the Full System Will Work
+
+- Chrome extension captures mixed audio from the meeting tab and microphone
+- Audio is uploaded to a backend and transcribed using Whisper AI
+- OpenAI/GPT processes the transcript to extract tasks, owners, deadlines, and decisions
+- Automated follow-up emails are sent the moment the meeting ends
+- A dashboard tracks completion status and flags unresolved blockers
+- Every meeting is stored and searchable — so organisational memory is never lost
+
+---
+
+## What This Repository Does Right Now
+
+This Chrome extension records the mixed stereo audio of:
+
+- Meeting tab audio (remote participants from Google Meet, Zoom, Teams, and other supported platforms)
+- Your microphone (your own voice)
+
+It saves everything as a WebM/Opus file directly to your computer via Chrome's download API.
+
+To build a reliable AI meeting assistant, you first need pristine, complete audio. Browser APIs (tabCapture + getUserMedia) are tricky to mix correctly. This extension solves that problem so the future AI pipeline has clean data to work with.
+
+---
+
+## Current Features
+
+- Detects supported meeting platforms (Google Meet, Zoom, Teams, Webex, GoToMeeting, BlueJeans, Whereby, Discord, Slack)
+- Records tab audio and microphone simultaneously
+- Mixes both into a single stereo track using the Web Audio API
+- Saves as WebM/Opus (128 kbps) – playable in any modern player
+- Shows a visible recording banner on the meeting page (ethical, non-optional)
+- Handles tab closure mid-recording gracefully
+- Persists state across service worker evictions
+
+---
 
 ## Installation
 
-1. Download/clone this folder to your computer.
+1. Download or clone this folder to your computer.
 2. Open Chrome and go to `chrome://extensions`.
-3. Turn on **Developer mode** (top-right toggle).
-4. Click **Load unpacked** and select the `relay` folder (the one
-   containing `manifest.json`).
+3. Turn on Developer mode (top-right toggle).
+4. Click Load unpacked and select the relay folder (the one containing `manifest.json`).
 5. The Relay icon will appear in your toolbar. Pin it for easy access.
 
-## Usage
+---
 
-1. Join a meeting in a supported tab (Google Meet, Zoom, Microsoft
-   Teams, Webex, GoToMeeting, BlueJeans, Whereby, Discord, or Slack
-   huddles).
-2. Click the Relay icon. If the active tab is recognized as a meeting,
-   you'll see a single **Start Recording** button.
-3. Click it. The first time, Chrome will ask for microphone
-   permission — allow it. Recording begins immediately, and a red
-   banner appears on the meeting page so everyone sharing that screen
-   can see it's happening.
-4. The popup shows a running timer. You can close the popup — Relay
-   keeps recording in the background. Reopening the popup shows the
-   correct elapsed time and a **Stop Recording** button.
-5. Click **Stop Recording** (from the popup) when you're done. A
-   "Save As" dialog opens immediately with a suggested filename like
-   `Relay_Meeting_2026-06-19_14-32-05.webm`. Choose where to save it.
-6. If the meeting tab is closed while recording, Relay automatically
-   stops, saves whatever was captured up to that point, and shows a
-   notification.
-
-## Supported meeting platforms
+## Supported Meeting Platforms
 
 Defined in `config.js` as a simple, easy-to-extend list:
 
@@ -60,37 +73,37 @@ Defined in `config.js` as a simple, easy-to-extend list:
 - discord.com
 - slack.com (huddles)
 
-To add another platform, add one line to the `MEETING_HOST_RULES`
-array in `config.js`, **and** add a matching URL pattern to
-`host_permissions` in `manifest.json` — Relay only has permission to
-inject the recording banner into the hostnames listed there, so the
-two lists need to stay in sync.
+To add another platform, add one line to the `MEETING_HOST_RULES` array in `config.js`, and add a matching URL pattern to `host_permissions` in `manifest.json` — Relay only has permission to inject the recording banner into the hostnames listed there, so the two lists need to stay in sync.
 
-## File format
+---
 
-Recordings are saved as WebM containers with Opus audio at 128 kbps
-stereo — small files with very good voice quality, playable in
-Chrome, VLC, and most modern media players.
+## File Format
+
+Recordings are saved as WebM containers with Opus audio at 128 kbps stereo — small files with very good voice quality, playable in Chrome, VLC, and most modern media players.
+
+---
 
 ## Files
 
-| File             | Purpose                                                        |
-| ---------------- | ---------------------------------------------------------------|
-| `manifest.json`  | Extension manifest (Manifest V3)                               |
-| `config.js`      | Shared list of supported meeting platforms                     |
-| `background.js`  | Service worker: state machine, tab capture, banner injection   |
+| File             | Purpose |
+| ---------------- | ------- |
+| `manifest.json`  | Extension manifest (Manifest V3) |
+| `config.js`      | Shared list of supported meeting platforms |
+| `background.js`  | Service worker: state machine, tab capture, banner injection |
 | `offscreen.html` / `offscreen.js` | Hidden document that captures, mixes, and encodes audio |
-| `popup.html` / `popup.css` / `popup.js` | The toolbar popup UI                            |
-| `icons/`         | Toolbar and store icons                                        |
+| `popup.html` / `popup.css` / `popup.js` | The toolbar popup UI |
+| `icons/`         | Toolbar and store icons |
+
+---
 
 ## Troubleshooting
 
-- **"Not a meeting tab"** — Relay only activates on the platforms
-  listed above. Make sure the meeting tab is the active tab when you
-  open the popup.
-- **Microphone permission denied** — Click the lock/info icon in
-  Chrome's address bar for the meeting tab, allow microphone access,
-  and try again.
-- **No audio from the meeting in the recording** — Make sure the
-  meeting tab was actually playing audio when you clicked Start
-  Recording, and that you didn't deny the tab-capture prompt.
+- **"Not a meeting tab"** — Relay only activates on the platforms listed above. Make sure the meeting tab is the active tab when you open the popup.
+- **Microphone permission denied** — Click the lock/info icon in Chrome's address bar for the meeting tab, allow microphone access, and try again.
+- **No audio from the meeting in the recording** — Make sure the meeting tab was actually playing audio when you clicked Start Recording, and that you did not deny the tab-capture prompt.
+
+---
+
+## Ethical Note
+
+Relay shows a prominent red banner on the meeting page whenever recording is active. This is intentional and non-negotiable. Recording conversations without clear notice is illegal in many jurisdictions and is fundamentally disrespectful to other participants. Do not modify the code to hide this indicator.
