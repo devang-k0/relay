@@ -46,6 +46,7 @@ To build a reliable AI meeting assistant, you first need pristine, complete audi
 - Shows a visible recording banner on the meeting page (ethical, non-optional)
 - Handles tab closure mid-recording gracefully
 - Persists state across service worker evictions
+- **Updated UI:** Dark brutalist redesign with Re/ay branding
 
 ---
 
