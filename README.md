@@ -72,7 +72,7 @@ Defined in `config.js` as a simple, easy-to-extend list:
 - bluejeans.com
 - whereby.com
 - discord.com
-- slack.com (huddles)
+- app.slack.com (Huddles)
 
 To add another platform, add one line to the `MEETING_HOST_RULES` array in `config.js`, and add a matching URL pattern to `host_permissions` in `manifest.json` — Relay only has permission to inject the recording banner into the hostnames listed there, so the two lists need to stay in sync.
 

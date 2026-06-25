@@ -12,18 +12,32 @@
     "downloads",
     "notifications"
   ],
-  "host_permissions": [
-    "https://meet.google.com/*",
-    "https://*.zoom.us/*",
-    "https://teams.microsoft.com/*",
-    "https://*.teams.microsoft.com/*",
-    "https://*.webex.com/*",
-    "https://*.gotomeeting.com/*",
-    "https://*.bluejeans.com/*",
-    "https://*.whereby.com/*",
-    "https://discord.com/*",
-    "https://*.slack.com/*"
-  ],
+"host_permissions": [
+  "https://meet.google.com/*",
+
+  "https://zoom.us/*",
+  "https://*.zoom.us/*",
+
+  "https://teams.microsoft.com/*",
+  "https://*.teams.microsoft.com/*",
+
+  "https://webex.com/*",
+  "https://*.webex.com/*",
+
+  "https://gotomeeting.com/*",
+  "https://*.gotomeeting.com/*",
+
+  "https://bluejeans.com/*",
+  "https://*.bluejeans.com/*",
+
+  "https://whereby.com/*",
+  "https://*.whereby.com/*",
+
+  "https://discord.com/*",
+
+  "https://app.slack.com/*",
+  "https://*.slack.com/*"
+],
   "background": {
     "service_worker": "background.js"
   },
